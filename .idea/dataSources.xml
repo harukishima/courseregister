@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="coursedb@128.199.121.158" uuid="dcd65acd-e235-42ee-af47-649c50db867c">
+    <data-source source="LOCAL" name="hibernate.cfg.xml/Hibernate" uuid="f26baf6a-7ee7-48bc-bd4a-a3c9b5bff2d1">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
+      <imported>true</imported>
+      <remarks>Hibernate
+
+E:/Code/registercourse/src/main/resources/hibernate.cfg.xml</remarks>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
       <jdbc-url>jdbc:postgresql://128.199.121.158:5432/coursedb</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>

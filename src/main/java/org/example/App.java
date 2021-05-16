@@ -1,8 +1,11 @@
 package org.example;
 
+import dao.dataCRUD;
 import entity.LopEntity;
 import org.hibernate.Session;
 import util.HibernateUtils;
+
+import java.util.List;
 
 /**
  * Hello world!
@@ -12,11 +15,7 @@ public class App
 {
     public static void main( String[] args )
     {
-        try (Session session = HibernateUtils.getSessionFactory().openSession()) {
-            session.beginTransaction();
-            LopEntity lop = new LopEntity();
-            session.save(lop);
-            session.getTransaction().commit();
-        }
+        LopEntity lopEntity = dataCRUD.getWithId(LopEntity.class, 1000000);
+        System.out.println(lopEntity);
     }
 }

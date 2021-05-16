@@ -45,4 +45,10 @@ public class LopEntity {
     public void setSinhviensByMalop(Collection<SinhvienEntity> sinhviensByMalop) {
         this.sinhviensByMalop = sinhviensByMalop;
     }
+
+    @Override
+    public String toString() {
+        return "LopEntity{" +
+                "malop=" + malop + "}";
+    }
 }
