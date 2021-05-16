@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://128.199.121.158:5432/coursedb</property>
+        <property name="hibernate.connection.username">postgres</property>
+        <property name="hibernate.connection.password">Haru1234Kishima</property>
+        <property name="hibernate.connection.pool_size">4</property>
+        <property name="hibernate.current_session_context_class">thread</property>
+        <property name="hibernate.show_sql">true</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQL10Dialect</property>
+        <mapping class="entity.GiaovienEntity"/>
+        <mapping class="entity.GiaovuEntity"/>
+        <mapping class="entity.HockiEntity"/>
+        <mapping class="entity.HocphanEntity"/>
+        <mapping class="entity.KidangkihocphanEntity"/>
+        <mapping class="entity.LopEntity"/>
+        <mapping class="entity.MonhocEntity"/>
+        <mapping class="entity.SinhvienEntity"/>
+        <mapping class="entity.SvdkhpEntity"/>
+
+
+    </session-factory>
+</hibernate-configuration>
