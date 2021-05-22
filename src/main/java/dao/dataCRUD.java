@@ -1,7 +1,5 @@
 package dao;
 
-import entity.GiaovienEntity;
-import entity.GiaovuEntity;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -24,6 +22,7 @@ public class dataCRUD {
         }
         return list;
     }
+
     public static <T> T getWithId(Class<T> tClass, int id) {
         T entity = null;
         Session session = HibernateUtils.getSessionFactory().openSession();
@@ -36,11 +35,9 @@ public class dataCRUD {
         }
         return entity;
     }
-    public static <T> boolean insertEntity(T entity, int id) {
+
+    public static <T> boolean insertEntity(T entity) {
         Session session = HibernateUtils.getSessionFactory().openSession();
-        if(getWithId(entity.getClass(), id) != null) {
-            return false;
-        }
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
@@ -50,11 +47,13 @@ public class dataCRUD {
             assert transaction != null;
             transaction.rollback();
             System.err.println(ex);
+            return false;
         } finally {
             session.close();
         }
         return true;
     }
+
     public static <T> boolean updateEntity(T entity, int id) {
         Session session = HibernateUtils.getSessionFactory().openSession();
         if (getWithId(entity.getClass(), id) == null) {
@@ -74,10 +73,11 @@ public class dataCRUD {
         }
         return true;
     }
-    public static <T> boolean deleteEntity(Class<T> tClass ,int id) {
+
+    public static <T> boolean deleteEntity(Class<T> tClass, int id) {
         Session session = HibernateUtils.getSessionFactory().openSession();
         T entity = getWithId(tClass, id);
-        if(entity == null) {
+        if (entity == null) {
             return false;
         }
         Transaction transaction = null;

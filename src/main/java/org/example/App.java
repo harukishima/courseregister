@@ -1,11 +1,10 @@
 package org.example;
 
-import dao.LopDAO;
-import dao.dataCRUD;
-import entity.LopEntity;
-import util.hashUtils;
-
-import java.util.List;
+import entity.GiaovienEntity;
+import entity.SinhvienEntity;
+import util.HibernateUtils;
+import view.GiaoVuLogIn;
+import view.StudentLogIn;
 
 /**
  * Hello world!
@@ -13,9 +12,13 @@ import java.util.List;
  */
 public class App 
 {
+    public static StudentLogIn studentLogIn = null;
+    public static GiaoVuLogIn giaoVuLogIn = null;
+    public static GiaovienEntity currentGV = null;
+    public static SinhvienEntity currentSV = null;
     public static void main( String[] args )
     {
-//        LopEntity lopEntity = dataCRUD.getWithId(LopEntity.class, 1000000);
-//        List<LopEntity> list = LopDAO.getListLoadAll();
+        HibernateUtils.getSessionFactory().openSession();
+        App.studentLogIn = new StudentLogIn();
     }
 }
