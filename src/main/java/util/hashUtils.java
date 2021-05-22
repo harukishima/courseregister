@@ -10,6 +10,8 @@ import java.util.Base64;
 import java.util.Objects;
 import java.util.Random;
 
+
+//Tham khao
 public class hashUtils {
     public static String generateRandomAlphanumeric(int length) {
         int leftLimit = 48; // numeral '0'

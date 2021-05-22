@@ -16,6 +16,7 @@ public class StudentLogIn extends JFrame{
 
     public StudentLogIn() {
         add(panel);
+        getRootPane().setDefaultButton(logInButton);
         init();
         setSize(400, 300);
         setTitle("ĐĂNG NHẬP");

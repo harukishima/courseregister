@@ -23,6 +23,20 @@ public class dataCRUD {
         return list;
     }
 
+    public static <T> List<T> customGetList(String hql) {
+        List<T> list = null;
+        Session session = HibernateUtils.getSessionFactory().openSession();
+        try {
+            Query query = session.createQuery(hql);
+            list = query.list();
+        } catch (HibernateException ex) {
+            System.err.println(ex);
+        } finally {
+            session.close();
+        }
+        return list;
+    }
+
     public static <T> T getWithId(Class<T> tClass, int id) {
         T entity = null;
         Session session = HibernateUtils.getSessionFactory().openSession();

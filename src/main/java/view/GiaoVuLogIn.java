@@ -1,16 +1,12 @@
 package view;
 
 import dao.GiaovuDAO;
-import entity.GiaovienEntity;
 import entity.GiaovuEntity;
 import org.example.App;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 
 public class GiaoVuLogIn extends JFrame {
     private JPanel panel1;
@@ -23,6 +19,7 @@ public class GiaoVuLogIn extends JFrame {
     public GiaoVuLogIn() {
         add(panel1);
         init();
+        getRootPane().setDefaultButton(logInButton);
         setResizable(false);
         setSize(400,300);
         setLocationRelativeTo(null);
@@ -45,27 +42,30 @@ public class GiaoVuLogIn extends JFrame {
                 dispose();
             }
         });
-        logInButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String username = userField.getText();
-                String password = String.valueOf(passwordField.getPassword());
-                if (username.isEmpty()) {
-                    dialog = new ErrorDialog("Chưa điền tên đăng nhập");
-                    dialog.setVisible(true);
-                    return;
-                } else if (password.isEmpty()) {
-                    dialog = new ErrorDialog("Chưa điền mật khẩu");
-                    dialog.setVisible(true);
-                    return;
-                }
-                GiaovuEntity gv = GiaovuDAO.LogIn(username, password);
-                if(gv == null) {
-                    dialog = new ErrorDialog("Tên đăng nhập hoặc mật khẩu sai");
-                    dialog.setVisible(true);
-                    return;
-                }
-            }
-        });
+        logInButton.addActionListener(this::logInAction);
+    }
+
+    public void logInAction(ActionEvent e) {
+        String username = userField.getText();
+        String password = String.valueOf(passwordField.getPassword());
+        if (username.isEmpty()) {
+            dialog = new ErrorDialog("Chưa điền tên đăng nhập");
+            dialog.setVisible(true);
+            return;
+        } else if (password.isEmpty()) {
+            dialog = new ErrorDialog("Chưa điền mật khẩu");
+            dialog.setVisible(true);
+            return;
+        }
+        GiaovuEntity gv = GiaovuDAO.LogIn(username, password);
+        if(gv == null) {
+            dialog = new ErrorDialog("Tên đăng nhập hoặc mật khẩu sai");
+            dialog.setVisible(true);
+            return;
+        }
+        App.currentGV = gv;
+        App.gvDashboard = new GVDashboard();
+        App.giaoVuLogIn = null;
+        dispose();
     }
 }
