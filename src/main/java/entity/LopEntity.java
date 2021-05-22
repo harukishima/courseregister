@@ -49,6 +49,8 @@ public class LopEntity {
     @Override
     public String toString() {
         return "LopEntity{" +
-                "malop=" + malop + "}";
+                "malop=" + malop +
+                ", sinhviensByMalop=" + sinhviensByMalop +
+                '}';
     }
 }

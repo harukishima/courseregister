@@ -1,9 +1,9 @@
 package org.example;
 
+import dao.LopDAO;
 import dao.dataCRUD;
 import entity.LopEntity;
-import org.hibernate.Session;
-import util.HibernateUtils;
+import util.hashUtils;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ public class App
 {
     public static void main( String[] args )
     {
-        LopEntity lopEntity = dataCRUD.getWithId(LopEntity.class, 1000000);
-        System.out.println(lopEntity);
+//        LopEntity lopEntity = dataCRUD.getWithId(LopEntity.class, 1000000);
+//        List<LopEntity> list = LopDAO.getListLoadAll();
     }
 }

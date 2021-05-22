@@ -1,39 +1,38 @@
 package dao;
 
 import entity.GiaovienEntity;
-import entity.GiaovuEntity;
+import entity.LopEntity;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
-import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import util.HibernateUtils;
 
 import java.util.List;
 
-public class GiaovienDAO {
-    public static GiaovienEntity getByIdLoadAll(int id) {
-        GiaovienEntity giaovienEntity = null;
+public class LopDAO {
+    public static LopEntity getByIdLoadAll(int id) {
+        LopEntity lopEntity = null;
         Session session = HibernateUtils.getSessionFactory().openSession();
         try {
-            giaovienEntity = session.get(GiaovienEntity.class, id);
-            Hibernate.initialize(giaovienEntity.getHocphansByMagv());
+            lopEntity = session.get(LopEntity.class, id);
+            Hibernate.initialize(lopEntity.getSinhviensByMalop());
         } catch (HibernateException ex) {
             System.err.println(ex);
         } finally {
             session.close();
         }
-        return giaovienEntity;
+        return lopEntity;
     }
 
-    public static List<GiaovienEntity> getListLoadAll() {
-        List<GiaovienEntity> list = null;
+    public static List<LopEntity> getListLoadAll() {
+        List<LopEntity> list = null;
         Session session = HibernateUtils.getSessionFactory().openSession();
         try {
-            Query query = session.createQuery("from GiaovienEntity");
+            Query query = session.createQuery("from LopEntity");
             list = query.list();
-            for(GiaovienEntity i : list) {
-                Hibernate.initialize(i.getHocphansByMagv());
+            for(LopEntity i : list) {
+                Hibernate.initialize(i.getSinhviensByMalop());
             }
         } catch (HibernateException ex) {
             System.err.println(ex);

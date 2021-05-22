@@ -1,14 +1,9 @@
 package dao;
 
-import entity.GiaovuEntity;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.hibernate.query.Query;
-import util.HibernateUtils;
-
-import java.util.List;
+import entity.GiaovienEntity;
 
 public class GiaovuDAO {
-
+    public static GiaovienEntity LogIn(String username, String password) {
+        return null;
+    }
 }
