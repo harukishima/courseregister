@@ -34,7 +34,7 @@ public class GiaovuDAO {
         List<GiaovuEntity> list = null;
         Session session = HibernateUtils.getSessionFactory().openSession();
         try {
-            Query query = session.createQuery("from GiaovuEntity where lower(fullname) like :searchString");
+            Query query = session.createQuery("from GiaovuEntity where lower(fullname) like :searchString order by magv asc");
             query.setParameter("searchString", "%"+search.toLowerCase()+"%");
             list = query.list();
         } catch (HibernateException ex) {

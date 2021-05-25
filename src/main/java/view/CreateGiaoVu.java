@@ -3,7 +3,6 @@ package view;
 import dao.GiaovuDAO;
 
 import javax.swing.*;
-import java.awt.*;
 
 public class CreateGiaoVu extends JFrame {
     private JTextField fullNameField;
@@ -19,6 +18,7 @@ public class CreateGiaoVu extends JFrame {
         init();
         this.gvDashboard = gvDashboard;
         setTitle("Tạo giáo vụ");
+        getRootPane().setDefaultButton(OKButton);
         setSize(300, 150);
         setLocationRelativeTo(null);
         setVisible(true);
@@ -34,7 +34,7 @@ public class CreateGiaoVu extends JFrame {
             if (GiaovuDAO.register(fullNameField.getText(), String.valueOf(passwordField1.getPassword()))) {
                 dialog = new SuccessDialog("Thêm giáo vụ thành công");
                 dialog.setVisible(true);
-                gvDashboard.updateListTable();
+                gvDashboard.updateListTableGV();
                 dispose();
             } else {
                 dialog = new ErrorDialog("Không thể thêm");

@@ -38,6 +38,10 @@ public class GVTableModel extends AbstractTableModel {
         return pass;
     }
 
+    public List<GiaovuEntity> getList() {
+        return list;
+    }
+
     @Override
     public String getColumnName(int column) {
         return columnNames[column];
