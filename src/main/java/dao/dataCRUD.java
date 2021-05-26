@@ -23,6 +23,20 @@ public class dataCRUD {
         return list;
     }
 
+    public static <T> List<T> getListOrder(Class<T> tClass, String order) {
+        List<T> list = null;
+        Session session = HibernateUtils.getSessionFactory().openSession();
+        try {
+            Query query = session.createQuery("from " + tClass.getName() + " " + order);
+            list = query.list();
+        } catch (HibernateException ex) {
+            System.err.println(ex);
+        } finally {
+            session.close();
+        }
+        return list;
+    }
+
     public static <T> List<T> customGetList(String hql) {
         List<T> list = null;
         Session session = HibernateUtils.getSessionFactory().openSession();
@@ -88,12 +102,17 @@ public class dataCRUD {
         return true;
     }
 
-    public static <T> boolean deleteEntity(Class<T> tClass, int id) {
+    public static <T> boolean deleteEntityById(Class<T> tClass, int id) {
         Session session = HibernateUtils.getSessionFactory().openSession();
         T entity = getWithId(tClass, id);
         if (entity == null) {
             return false;
         }
+        return deleteEntity(entity);
+    }
+
+    public static <T> boolean deleteEntity(T entity) {
+        Session session = HibernateUtils.getSessionFactory().openSession();
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();

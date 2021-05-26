@@ -1,5 +1,7 @@
 package entity;
 
+import org.postgresql.util.PGTimestamp;
+
 import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.Collection;

@@ -1,11 +1,16 @@
 package view;
 
 import dao.GiaovuDAO;
+import dao.HockiDAO;
 import dao.MonhocDAO;
 import dao.dataCRUD;
 import entity.GiaovuEntity;
+import entity.HockiEntity;
+import entity.LopEntity;
 import entity.MonhocEntity;
 import model.GVTableModel;
+import model.HKTableModel;
+import model.LopTableModel;
 import model.MHTableModel;
 import org.example.App;
 import util.hashUtils;
@@ -34,8 +39,20 @@ public class GVDashboard extends JFrame {
     private JButton editMHButton;
     private JButton addMHButton;
     private JButton deleteMHButton;
+
+    private JTable HKTable;
+    private JButton addHKButton;
+    private JButton deleteHKButton;
+    private JButton setCurrentHKButton;
+
+    private JTable LopTable;
+    private JButton addLopButton;
+    private JButton deleteLopButton;
+
     private GVTableModel gvTableModel;
     private MHTableModel mhTableModel;
+    private HKTableModel hkTableModel;
+    private LopTableModel lopTableModel;
     private JDialog dialog;
 
     public GVDashboard() {
@@ -57,6 +74,8 @@ public class GVDashboard extends JFrame {
         });
         initGVTab();
         initMHTab();
+        initHKTab();
+        initClassTab();
     }
 
     public void initGVTab() {
@@ -142,6 +161,33 @@ public class GVDashboard extends JFrame {
         });
     }
 
+    public void initHKTab() {
+        List<HockiEntity> listHK = dataCRUD.getListOrder(HockiEntity.class, "order by tenhk asc, namhoc asc");
+        hkTableModel = new HKTableModel(listHK);
+        HKTable.setModel(hkTableModel);
+        addHKButton.addActionListener(e -> new CreateHocKi(this));
+        setCurrentHKButton.addActionListener(e -> setCurrentHK());
+        deleteHKButton.addActionListener(e -> {
+            int row = HKTable.getSelectedRow();
+            if (row < 0) {
+                dialog = new ErrorDialog("Chưa chọn HK nào");
+                dialog.setVisible(true);
+                return;
+            }
+            int dialogResult = JOptionPane.showConfirmDialog(this, "Bạn có thực sự muốn xoá?",
+                    "Xác nhận", JOptionPane.YES_NO_OPTION);
+            if (dialogResult == JOptionPane.YES_OPTION) {
+                deleteHK();
+            }
+        });
+    }
+
+    public void initClassTab() {
+        List<LopEntity> list = dataCRUD.getList(LopEntity.class);
+        lopTableModel = new LopTableModel(list);
+        LopTable.setModel(lopTableModel);
+    }
+
     public void searchGV(ActionEvent e) {
         updateTableGV(GiaovuDAO.findGV(searchGVField.getText()));
     }
@@ -162,12 +208,21 @@ public class GVDashboard extends JFrame {
         searchMHField.setText("");
     }
 
+    public void updateListTableHK() {
+        List<HockiEntity> list = dataCRUD.getListOrder(HockiEntity.class, "order by tenhk asc, namhoc asc");
+        updateTableHK(list);
+    }
+
     public void updateTableGV(List<GiaovuEntity> list) {
         gvTableModel.setList(list);
     }
 
     public void updateTableMH(List<MonhocEntity> list) {
         mhTableModel.setList(list);
+    }
+
+    public void updateTableHK(List<HockiEntity> list) {
+        hkTableModel.setList(list);
     }
 
     public void openCreateGVForm() {
@@ -209,7 +264,7 @@ public class GVDashboard extends JFrame {
         List<Integer> delete = gvTableModel.getDelete();
         for (GiaovuEntity gv : list) {
             if (delete.contains(gv.getMagv())) {
-                dataCRUD.deleteEntity(GiaovuEntity.class, gv.getMagv());
+                dataCRUD.deleteEntityById(GiaovuEntity.class, gv.getMagv());
             }
         }
         dialog = new SuccessDialog("Xoá thành công");
@@ -222,12 +277,37 @@ public class GVDashboard extends JFrame {
         List<Integer> delete = mhTableModel.getDelete();
         for (MonhocEntity mh : list) {
             if (delete.contains(mh.getMamh())) {
-                dataCRUD.deleteEntity(MonhocEntity.class, mh.getMamh());
+                dataCRUD.deleteEntityById(MonhocEntity.class, mh.getMamh());
             }
         }
         dialog = new SuccessDialog("Xoá thành công");
         dialog.setVisible(true);
         updateListTableMH();
+    }
+
+    public void deleteHK() {
+        int row = HKTable.getSelectedRow();
+        String tenhk = (String) HKTable.getValueAt(row, 0);
+        int nam = (int) HKTable.getValueAt(row, 1);
+        if (!dataCRUD.deleteEntity(HockiDAO.getHK(tenhk, nam))) {
+            dialog = new ErrorDialog("Không thể xoá HK");
+            dialog.setVisible(true);
+            return;
+        }
+        dialog = new SuccessDialog("Xoá HK thành công");
+        dialog.setVisible(true);
+        updateListTableHK();
+    }
+
+    public void setCurrentHK() {
+        int row = HKTable.getSelectedRow();
+        String tentk = (String) HKTable.getValueAt(row, 0);
+        int nam = (int) HKTable.getValueAt(row, 1);
+        if (!HockiDAO.setCurrentHK(tentk, nam)) {
+            dialog = new ErrorDialog("Không thể đặt làm HK hiện tại");
+            dialog.setVisible(true);
+        }
+        updateListTableHK();
     }
 
 }
