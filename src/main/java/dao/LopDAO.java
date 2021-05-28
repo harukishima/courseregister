@@ -6,6 +6,7 @@ import entity.LopEntityExtended;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import util.HibernateUtils;
 
@@ -65,5 +66,30 @@ public class LopDAO {
             session.close();
         }
         return list;
+    }
+
+    public static Boolean deleteLop(int id) {
+        LopEntity lopEntity = dataCRUD.getWithId(LopEntity.class, id);
+        if (lopEntity == null) {
+            return false;
+        }
+        Session session = HibernateUtils.getSessionFactory().openSession();
+        Transaction transaction = null;
+        try {
+            transaction = session.beginTransaction();
+            Query query = session.createQuery("update SinhvienEntity set malop = null where malop = :ml");
+            query.setParameter("ml", id);
+            query.executeUpdate();
+            session.delete(lopEntity);
+            transaction.commit();
+        } catch (HibernateException e) {
+            e.printStackTrace();
+            assert transaction != null;
+            transaction.rollback();
+            return false;
+        } finally {
+            session.close();
+        }
+        return true;
     }
 }

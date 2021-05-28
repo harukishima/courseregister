@@ -1,9 +1,6 @@
 package view;
 
-import dao.GiaovuDAO;
-import dao.HockiDAO;
-import dao.MonhocDAO;
-import dao.dataCRUD;
+import dao.*;
 import entity.GiaovuEntity;
 import entity.HockiEntity;
 import entity.LopEntity;
@@ -186,6 +183,26 @@ public class GVDashboard extends JFrame {
         List<LopEntity> list = dataCRUD.getList(LopEntity.class);
         lopTableModel = new LopTableModel(list);
         LopTable.setModel(lopTableModel);
+        deleteLopButton.addActionListener(e -> {
+            int row = LopTable.getSelectedRow();
+            if (row < 0) {
+                dialog = new ErrorDialog("Chưa chọn lớp nào");
+                dialog.setVisible(true);
+                return;
+            }
+            int dialogResult = JOptionPane.showConfirmDialog(this, "Bạn có thực sự muốn xoá?",
+                    "Xác nhận", JOptionPane.YES_NO_OPTION);
+            if (dialogResult == JOptionPane.YES_OPTION) {
+                deleteLop(row);
+            }
+        });
+        addLopButton.addActionListener(e -> {
+            int dialogResult = JOptionPane.showConfirmDialog(this, "Bạn có muốn thêm lớp?",
+                    "Xác nhận", JOptionPane.YES_NO_OPTION);
+            if (dialogResult == JOptionPane.YES_OPTION) {
+                addNewClass();
+            }
+        });
     }
 
     public void searchGV(ActionEvent e) {
@@ -213,6 +230,11 @@ public class GVDashboard extends JFrame {
         updateTableHK(list);
     }
 
+    public void updateListTableLop() {
+        List<LopEntity> list = dataCRUD.getListOrder(LopEntity.class, "order by malop asc");
+        updateTableLop(list);
+    }
+
     public void updateTableGV(List<GiaovuEntity> list) {
         gvTableModel.setList(list);
     }
@@ -225,8 +247,25 @@ public class GVDashboard extends JFrame {
         hkTableModel.setList(list);
     }
 
+    public void updateTableLop(List<LopEntity> list) {
+        lopTableModel.setList(list);
+    }
+
     public void openCreateGVForm() {
         new CreateGiaoVu(this);
+    }
+
+    public void addNewClass() {
+        LopEntity lopEntity = new LopEntity();
+
+        if (!dataCRUD.insertEntity(lopEntity)) {
+            dialog = new SuccessDialog("Không thể thêm lớp mới");
+            dialog.setVisible(true);
+            return;
+        }
+        dialog = new SuccessDialog("Thêm lớp mới thành công");
+        dialog.setVisible(true);
+        updateListTableLop();
     }
 
     public void saveEditGV() {
@@ -297,6 +336,18 @@ public class GVDashboard extends JFrame {
         dialog = new SuccessDialog("Xoá HK thành công");
         dialog.setVisible(true);
         updateListTableHK();
+    }
+
+    public void deleteLop(int row) {
+        int id = (int) LopTable.getValueAt(row, 0);
+        if (!LopDAO.deleteLop(id)) {
+            dialog = new ErrorDialog("Không thể xoá lớp");
+            dialog.setVisible(true);
+            return;
+        }
+        dialog = new SuccessDialog("Xoá lớp thành công");
+        dialog.setVisible(true);
+        updateListTableLop();
     }
 
     public void setCurrentHK() {
