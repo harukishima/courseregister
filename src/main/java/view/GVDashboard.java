@@ -50,6 +50,7 @@ public class GVDashboard extends JFrame {
     private JButton changeClassButton;
     private JTable KDKtable;
     private JButton addKDKButton;
+    private JButton deleteKDKButton;
 
     private GVTableModel gvTableModel;
     private MHTableModel mhTableModel;
@@ -285,6 +286,19 @@ public class GVDashboard extends JFrame {
             HockiEntity hk = HockiDAO.getCurrentHK();
             new CreateKDK(this, hk);
         });
+        deleteKDKButton.addActionListener(e -> {
+            int row = KDKtable.getSelectedRow();
+            if (row < 0) {
+                dialog = new ErrorDialog("Chưa chọn kì đăng kí nào");
+                dialog.setVisible(true);
+                return;
+            }
+            int dialogResult = JOptionPane.showConfirmDialog(this, "Bạn có thực sự muốn xoá?",
+                    "Xác nhận", JOptionPane.YES_NO_OPTION);
+            if (dialogResult == JOptionPane.YES_OPTION) {
+                deleteKDK(row);
+            }
+        });
     }
 
     public void searchGV(ActionEvent e) {
@@ -503,6 +517,18 @@ public class GVDashboard extends JFrame {
         dialog = new SuccessDialog("Xoá lớp thành công");
         dialog.setVisible(true);
         updateListTableLop();
+    }
+
+    public void deleteKDK(int row) {
+        int id = (int) KDKtable.getValueAt(row, 0);
+        if (!dataCRUD.deleteEntityById(KidangkihocphanEntity.class, id)) {
+            dialog = new ErrorDialog("Không thể xoá kì đăng kí");
+            dialog.setVisible(true);
+            return;
+        }
+        dialog = new SuccessDialog("Xoá kì đăng kí thành công");
+        dialog.setVisible(true);
+        updateListTableKDK();
     }
 
     public void setCurrentHK() {
