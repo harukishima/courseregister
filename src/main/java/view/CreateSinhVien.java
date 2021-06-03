@@ -4,6 +4,8 @@ import dao.dataCRUD;
 import entity.SinhvienEntity;
 import org.apache.commons.lang3.math.NumberUtils;
 import util.HibernateUtils;
+import util.NlpUtils;
+import util.hashUtils;
 
 import javax.swing.*;
 import java.util.Locale;
@@ -51,8 +53,8 @@ public class CreateSinhVien extends JFrame {
 //        }
         SinhvienEntity sinhvienEntity = new SinhvienEntity();
         sinhvienEntity.setFullname(nameField.getText());
-        String pass = nameField.getText().replaceAll(" ", "").toLowerCase(Locale.ROOT);
-        sinhvienEntity.setPass(pass);
+        String pass = NlpUtils.removeAccent(nameField.getText().replaceAll(" ", "").toLowerCase(Locale.ROOT));
+        sinhvienEntity.setPass(hashUtils.hashPassword(pass));
         sinhvienEntity.setNamnhaphoc(Short.valueOf(yearField.getText()));
         sinhvienEntity.setGioitinh((String) genderBox.getSelectedItem());
         if (!classField.getText().isEmpty()) {

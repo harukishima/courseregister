@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.ZoneOffset;
 import java.util.Calendar;
 
 public class CreateHocKi extends JFrame {
@@ -52,12 +53,13 @@ public class CreateHocKi extends JFrame {
         HockiEntity hockiEntity = new HockiEntity();
         hockiEntity.setTenhk((String) tenHKBox.getSelectedItem());
         hockiEntity.setNamhoc(namHoc);
+        hockiEntity.setHkhientai(false);
         try {
             System.out.println(startDateField.getDate().toString());
-            PGTimestamp timestamp = new PGTimestamp(startDateField.getDate().toEpochDay() * 86400000);
+            PGTimestamp timestamp = new PGTimestamp(startDateField.getDate().atStartOfDay().toEpochSecond(ZoneOffset.ofHours(7)) * 1000L);
             System.out.println(timestamp);
             hockiEntity.setNgaybatdau(timestamp);
-            hockiEntity.setNgayketthuc(new PGTimestamp(endDateField.getDate().toEpochDay() * 86400000));
+            hockiEntity.setNgayketthuc(new PGTimestamp(endDateField.getDate().atStartOfDay().toEpochSecond(ZoneOffset.ofHours(7)) * 1000L));
         } catch (Exception e) {
             e.printStackTrace();
             dialog = new ErrorDialog("Chưa nhập ngày");

@@ -77,7 +77,7 @@ public class LopDAO {
                 List<?> c = query.list();
                 for(int i=0; i<list.size(); i++) {
                     Object[] row = (Object[]) c.get(i);
-                    System.out.println(row[0]+", "+ row[1]);
+                    //System.out.println(row[0]+", "+ row[1]);
                     if (row[1].equals("NAM")) {
                         nam = Math.toIntExact((long) row[0]);
                     } else {

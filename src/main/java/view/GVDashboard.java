@@ -48,12 +48,15 @@ public class GVDashboard extends JFrame {
     private JButton editSVButton;
     private JButton searchSVButton;
     private JButton changeClassButton;
+    private JTable KDKtable;
+    private JButton addKDKButton;
 
     private GVTableModel gvTableModel;
     private MHTableModel mhTableModel;
     private HKTableModel hkTableModel;
     private LopTableModel lopTableModel;
     private SVTableModel svTableModel;
+    private KDKTableModel kdkTableModel;
     private JDialog dialog;
 
     public GVDashboard() {
@@ -78,6 +81,7 @@ public class GVDashboard extends JFrame {
         initHKTab();
         initClassTab();
         initSVTab();
+        initKDKTab();
     }
 
     public void initGVTab() {
@@ -272,6 +276,17 @@ public class GVDashboard extends JFrame {
         });
     }
 
+    public void initKDKTab() {
+        List<KidangkihocphanEntity> list = dataCRUD.getListOrder(KidangkihocphanEntity.class,
+                "order by tenhk asc, namhoc asc, idkidk asc");
+        kdkTableModel = new KDKTableModel(list);
+        KDKtable.setModel(kdkTableModel);
+        addKDKButton.addActionListener(e -> {
+            HockiEntity hk = HockiDAO.getCurrentHK();
+            new CreateKDK(this, hk);
+        });
+    }
+
     public void searchGV(ActionEvent e) {
         updateTableGV(GiaovuDAO.findGV(searchGVField.getText()));
     }
@@ -331,6 +346,12 @@ public class GVDashboard extends JFrame {
         svSearchField.setText("");
     }
 
+    public void updateListTableKDK() {
+        List<KidangkihocphanEntity> list = dataCRUD.getListOrder(KidangkihocphanEntity.class,
+                "order by tenhk asc, namhoc asc, idkidk asc");
+        updateTableKDK(list);
+    }
+
     public void updateTableGV(List<GiaovuEntity> list) {
         gvTableModel.setList(list);
     }
@@ -349,6 +370,10 @@ public class GVDashboard extends JFrame {
 
     public void updateTableSV(List<SinhvienEntity> list) {
         svTableModel.setList(list);
+    }
+
+    public void updateTableKDK(List<KidangkihocphanEntity> list) {
+        kdkTableModel.setList(list);
     }
 
     public void openCreateGVForm() {
