@@ -7,9 +7,9 @@ import org.example.App;
 import util.hashUtils;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.*;
+import java.awt.event.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -46,7 +46,7 @@ public class GVDashboard extends JFrame {
     private JComboBox classBox;
     private JButton addSVButton;
     private JButton editSVButton;
-    private JButton searchButton;
+    private JButton searchSVButton;
     private JButton changeClassButton;
 
     private GVTableModel gvTableModel;
@@ -182,6 +182,15 @@ public class GVDashboard extends JFrame {
                 deleteHK();
             }
         });
+        searchSVButton.addActionListener(this::searchSV);
+        svSearchField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    searchSVButton.doClick(0);
+                }
+            }
+        });
     }
 
     public void initSVTab() {
@@ -247,6 +256,20 @@ public class GVDashboard extends JFrame {
                 addNewClass();
             }
         });
+        LopTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                JTable table = (JTable) e.getSource();
+                Point point = e.getPoint();
+                int row = table.rowAtPoint(point);
+                if (e.getClickCount() == 2 && table.getSelectedRow() != -1) {
+                    tabbedPane1.setSelectedIndex(4);
+                    classBox.setSelectedItem(table.getValueAt(row, 0));
+                    svSearchField.setText("");
+                    searchSVButton.doClick(0);
+                }
+            }
+        });
     }
 
     public void searchGV(ActionEvent e) {
@@ -255,6 +278,23 @@ public class GVDashboard extends JFrame {
 
     public void searchMH(ActionEvent e) {
         updateTableMH(MonhocDAO.findMH(searchMHField.getText()));
+    }
+
+    public void searchSV(ActionEvent e) {
+        List<SinhvienEntity> sinhvienEntityList;
+        String searchText = svSearchField.getText();
+        if (searchText.isEmpty()) {
+            updateListTableSV();
+            return;
+        }
+        try {
+            int ms = Integer.parseInt(searchText);
+            sinhvienEntityList = new ArrayList<>();
+            sinhvienEntityList.add(dataCRUD.getWithId(SinhvienEntity.class, ms));
+        } catch (NumberFormatException ex) {
+            sinhvienEntityList = SinhvienDAO.findSV(searchText, (classBox.getSelectedItem() == "*"?-1:(int) classBox.getSelectedItem()));
+        }
+        updateTableSV(sinhvienEntityList);
     }
 
     public void updateListTableGV() {
