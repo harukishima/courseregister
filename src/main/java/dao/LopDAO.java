@@ -3,6 +3,7 @@ package dao;
 import entity.GiaovienEntity;
 import entity.LopEntity;
 import entity.LopEntityExtended;
+import entity.SinhvienEntity;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -91,5 +92,23 @@ public class LopDAO {
             session.close();
         }
         return true;
+    }
+
+    public static Boolean checkClassEmpty(int id) {
+        LopEntity lopEntity = dataCRUD.getWithId(LopEntity.class, id);
+        List<SinhvienEntity> list = null;
+        if (lopEntity == null) {
+            return false;
+        }
+        Session session = HibernateUtils.getSessionFactory().openSession();
+        try {
+            Query query = session.createQuery("from SinhvienEntity where malop = :ml");
+            list = query.list();
+        } catch (HibernateException e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return list != null && list.isEmpty();
     }
 }

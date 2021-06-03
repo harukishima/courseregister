@@ -1,14 +1,8 @@
 package view;
 
 import dao.*;
-import entity.GiaovuEntity;
-import entity.HockiEntity;
-import entity.LopEntity;
-import entity.MonhocEntity;
-import model.GVTableModel;
-import model.HKTableModel;
-import model.LopTableModel;
-import model.MHTableModel;
+import entity.*;
+import model.*;
 import org.example.App;
 import util.hashUtils;
 
@@ -17,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.List;
+import java.util.Objects;
 
 public class GVDashboard extends JFrame {
     private JTabbedPane tabbedPane1;
@@ -46,10 +41,19 @@ public class GVDashboard extends JFrame {
     private JButton addLopButton;
     private JButton deleteLopButton;
 
+    private JTable SVTable;
+    private JTextField svSearchField;
+    private JComboBox classBox;
+    private JButton addSVButton;
+    private JButton editSVButton;
+    private JButton searchButton;
+    private JButton changeClassButton;
+
     private GVTableModel gvTableModel;
     private MHTableModel mhTableModel;
     private HKTableModel hkTableModel;
     private LopTableModel lopTableModel;
+    private SVTableModel svTableModel;
     private JDialog dialog;
 
     public GVDashboard() {
@@ -73,6 +77,7 @@ public class GVDashboard extends JFrame {
         initMHTab();
         initHKTab();
         initClassTab();
+        initSVTab();
     }
 
     public void initGVTab() {
@@ -179,6 +184,45 @@ public class GVDashboard extends JFrame {
         });
     }
 
+    public void initSVTab() {
+        List<LopEntity> lopEntityList = dataCRUD.getList(LopEntity.class);
+        classBox.addItem("*");
+        for (LopEntity e : lopEntityList) {
+            classBox.addItem(e.getMalop());
+        }
+        classBox.setSelectedItem("*");
+        List<SinhvienEntity> sinhvienEntityList = dataCRUD.getList(SinhvienEntity.class);
+        svTableModel = new SVTableModel(sinhvienEntityList);
+        JComboBox<String> gender = new JComboBox<>();
+        gender.addItem("NAM");
+        gender.addItem("NU");
+        SVTable.setModel(svTableModel);
+        SVTable.getColumnModel().getColumn(3).setCellEditor(new DefaultCellEditor(gender));
+        addSVButton.addActionListener(e -> {
+            addNewSV();
+        });
+        editSVButton.addActionListener(e -> {
+            if (svTableModel.getEdit().isEmpty()) {
+                dialog = new ErrorDialog("Không có gì để sửa");
+                dialog.setVisible(true);
+                return;
+            }
+            int dialogResult = JOptionPane.showConfirmDialog(this, "Bạn có muốn sửa các SV trên?",
+                    "Xác nhận", JOptionPane.YES_NO_OPTION);
+            if (dialogResult == JOptionPane.YES_OPTION) {
+                saveEditSV();
+            }
+        });
+        changeClassButton.addActionListener(e -> {
+            if (SVTable.getSelectedRow() < 0) {
+                dialog = new ErrorDialog("Chưa chọn sinh viên");
+                dialog.setVisible(true);
+                return;
+            }
+            new ChangeClassForm(svTableModel.getList().get(SVTable.getSelectedRow()), this);
+        });
+    }
+
     public void initClassTab() {
         List<LopEntity> list = dataCRUD.getList(LopEntity.class);
         lopTableModel = new LopTableModel(list);
@@ -235,6 +279,18 @@ public class GVDashboard extends JFrame {
         updateTableLop(list);
     }
 
+    public void updateListTableSV() {
+        List<SinhvienEntity> list;
+        try {
+            int classID = (int) classBox.getSelectedItem();
+            list = (List<SinhvienEntity>) LopDAO.getByIdLoadAll(classID).getSinhviensByMalop();
+        } catch (Exception e) {
+            list = dataCRUD.getListOrder(SinhvienEntity.class, "order by masv asc");
+        }
+        updateTableSV(list);
+        svSearchField.setText("");
+    }
+
     public void updateTableGV(List<GiaovuEntity> list) {
         gvTableModel.setList(list);
     }
@@ -249,6 +305,10 @@ public class GVDashboard extends JFrame {
 
     public void updateTableLop(List<LopEntity> list) {
         lopTableModel.setList(list);
+    }
+
+    public void updateTableSV(List<SinhvienEntity> list) {
+        svTableModel.setList(list);
     }
 
     public void openCreateGVForm() {
@@ -266,6 +326,14 @@ public class GVDashboard extends JFrame {
         dialog = new SuccessDialog("Thêm lớp mới thành công");
         dialog.setVisible(true);
         updateListTableLop();
+    }
+
+    public void addNewSV() {
+        if(Objects.equals(classBox.getSelectedItem(), "*")) {
+            new CreateSinhVien(this);
+        } else {
+            new CreateSinhVien((Integer) classBox.getSelectedItem(), this);
+        }
     }
 
     public void saveEditGV() {
@@ -296,6 +364,23 @@ public class GVDashboard extends JFrame {
         dialog = new SuccessDialog("Sửa thành công");
         dialog.setVisible(true);
         updateListTableMH();
+    }
+
+    public void saveEditSV() {
+        List<SinhvienEntity> list = svTableModel.getList();
+        List<Integer> edit = svTableModel.getEdit();
+        List<Integer> pass = svTableModel.getPass();
+        for (SinhvienEntity sv : list) {
+            if (pass.contains(sv.getMasv())) {
+                sv.setPass(hashUtils.hashPassword(sv.getPass()));
+            }
+            if (edit.contains(sv.getMasv())) {
+                dataCRUD.updateEntity(sv, sv.getMasv());
+            }
+        }
+        dialog = new SuccessDialog("Cập nhật thành công");
+        dialog.setVisible(true);
+        updateListTableSV();
     }
 
     public void deleteGV() {
@@ -340,6 +425,11 @@ public class GVDashboard extends JFrame {
 
     public void deleteLop(int row) {
         int id = (int) LopTable.getValueAt(row, 0);
+        if (!LopDAO.checkClassEmpty(id)) {
+            dialog = new ErrorDialog("Chỉ có thể xoá lớp không có SV");
+            dialog.setVisible(true);
+            return;
+        }
         if (!LopDAO.deleteLop(id)) {
             dialog = new ErrorDialog("Không thể xoá lớp");
             dialog.setVisible(true);
