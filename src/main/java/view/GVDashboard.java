@@ -51,6 +51,10 @@ public class GVDashboard extends JFrame {
     private JTable KDKtable;
     private JButton addKDKButton;
     private JButton deleteKDKButton;
+    private JTable GVienTable;
+    private JButton addGVienButton;
+    private JButton editGVienButton;
+    private JButton deleteGVienButton;
 
     private GVTableModel gvTableModel;
     private MHTableModel mhTableModel;
@@ -58,6 +62,7 @@ public class GVDashboard extends JFrame {
     private LopTableModel lopTableModel;
     private SVTableModel svTableModel;
     private KDKTableModel kdkTableModel;
+    private GVienTableModel gVienTableModel;
     private JDialog dialog;
 
     public GVDashboard() {
@@ -83,6 +88,7 @@ public class GVDashboard extends JFrame {
         initClassTab();
         initSVTab();
         initKDKTab();
+        initGVienTab();
     }
 
     public void initGVTab() {
@@ -301,6 +307,38 @@ public class GVDashboard extends JFrame {
         });
     }
 
+    public void initGVienTab() {
+        List<GiaovienEntity> list = dataCRUD.getListOrder(GiaovienEntity.class, "order by magv asc");
+        gVienTableModel = new GVienTableModel(list);
+        GVienTable.setModel(gVienTableModel);
+        addGVienButton.addActionListener(e -> new CreateGiaoVien(this));
+        editGVienButton.addActionListener(e -> {
+            if (gVienTableModel.getEdit().isEmpty()) {
+                dialog = new ErrorDialog("Không có gì để sửa");
+                dialog.setVisible(true);
+                return;
+            }
+            int dialogResult = JOptionPane.showConfirmDialog(this, "Bạn có muốn sửa các giáo viên trên?",
+                    "Xác nhận", JOptionPane.YES_NO_OPTION);
+            if (dialogResult == JOptionPane.YES_OPTION) {
+                saveEditGVien();
+            }
+        });
+        deleteGVienButton.addActionListener(e -> {
+            int row = GVienTable.getSelectedRow();
+            if (row < 0) {
+                dialog = new ErrorDialog("Chưa chọn giáo viên nào");
+                dialog.setVisible(true);
+                return;
+            }
+            int dialogResult = JOptionPane.showConfirmDialog(this, "Bạn có thực sự muốn xoá?",
+                    "Xác nhận", JOptionPane.YES_NO_OPTION);
+            if (dialogResult == JOptionPane.YES_OPTION) {
+                deleteGVien(row);
+            }
+        });
+    }
+
     public void searchGV(ActionEvent e) {
         updateTableGV(GiaovuDAO.findGV(searchGVField.getText()));
     }
@@ -366,6 +404,11 @@ public class GVDashboard extends JFrame {
         updateTableKDK(list);
     }
 
+    public void updateListTableGVien() {
+        List<GiaovienEntity> list = dataCRUD.getListOrder(GiaovienEntity.class, "order by magv asc");
+        updateTableGVien(list);
+    }
+
     public void updateTableGV(List<GiaovuEntity> list) {
         gvTableModel.setList(list);
     }
@@ -388,6 +431,10 @@ public class GVDashboard extends JFrame {
 
     public void updateTableKDK(List<KidangkihocphanEntity> list) {
         kdkTableModel.setList(list);
+    }
+
+    public void updateTableGVien(List<GiaovienEntity> list) {
+        gVienTableModel.setList(list);
     }
 
     public void openCreateGVForm() {
@@ -462,6 +509,19 @@ public class GVDashboard extends JFrame {
         updateListTableSV();
     }
 
+    public void saveEditGVien() {
+        List<GiaovienEntity> list = gVienTableModel.getList();
+        List<Integer> edit = gVienTableModel.getEdit();
+        for (GiaovienEntity gv : list) {
+            if (edit.contains(gv.getMagv())) {
+                dataCRUD.updateEntity(gv, gv.getMagv());
+            }
+        }
+        dialog = new SuccessDialog("Cập nhật thành công");
+        dialog.setVisible(true);
+        updateListTableGVien();
+    }
+
     public void deleteGV() {
         List<GiaovuEntity> list = gvTableModel.getList();
         List<Integer> delete = gvTableModel.getDelete();
@@ -529,6 +589,18 @@ public class GVDashboard extends JFrame {
         dialog = new SuccessDialog("Xoá kì đăng kí thành công");
         dialog.setVisible(true);
         updateListTableKDK();
+    }
+
+    public void deleteGVien(int row) {
+        int id = (int) GVienTable.getValueAt(row, 1);
+        if (!dataCRUD.deleteEntityById(GiaovienEntity.class, id)) {
+            dialog = new ErrorDialog("Không thể xoá giáo viên");
+            dialog.setVisible(true);
+            return;
+        }
+        dialog = new SuccessDialog("Xoá giáo viên thành công");
+        dialog.setVisible(true);
+        updateListTableGVien();
     }
 
     public void setCurrentHK() {
