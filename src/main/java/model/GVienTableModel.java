@@ -1,7 +1,6 @@
 package model;
 
 import entity.GiaovienEntity;
-import entity.GiaovuEntity;
 
 import javax.swing.table.AbstractTableModel;
 import java.util.ArrayList;

@@ -9,7 +9,7 @@
 
 E:/Code/registercourse/src/main/resources/hibernate.cfg.xml</remarks>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:postgresql://128.199.121.158:5432/coursedb</jdbc-url>
+      <jdbc-url>jdbc:postgresql://178.128.121.171:5432/coursedb</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>

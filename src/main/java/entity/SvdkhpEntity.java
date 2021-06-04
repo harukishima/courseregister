@@ -1,6 +1,7 @@
 package entity;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "svdkhp", schema = "public", catalog = "coursedb")
@@ -8,6 +9,7 @@ import javax.persistence.*;
 public class SvdkhpEntity {
     private int masv;
     private int idhocphan;
+    private Timestamp thoigiandk;
     private SinhvienEntity sinhvienByMasv;
     private HocphanEntity hocphanByIdhocphan;
 
@@ -29,6 +31,16 @@ public class SvdkhpEntity {
 
     public void setIdhocphan(int idhocphan) {
         this.idhocphan = idhocphan;
+    }
+
+    @Basic
+    @Column(name = "thoigiandk")
+    public Timestamp getThoigiandk() {
+        return thoigiandk;
+    }
+
+    public void setThoigiandk(Timestamp thoigiandk) {
+        this.thoigiandk = thoigiandk;
     }
 
     @Override
