@@ -198,15 +198,6 @@ public class GVDashboard extends JFrame {
                 deleteHK();
             }
         });
-        searchSVButton.addActionListener(this::searchSV);
-        svSearchField.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    searchSVButton.doClick(0);
-                }
-            }
-        });
     }
 
     public void initSVTab() {
@@ -245,6 +236,15 @@ public class GVDashboard extends JFrame {
                 return;
             }
             new ChangeClassForm(svTableModel.getList().get(SVTable.getSelectedRow()), this);
+        });
+        searchSVButton.addActionListener(this::searchSV);
+        svSearchField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    searchSVButton.doClick(0);
+                }
+            }
         });
     }
 
@@ -362,6 +362,17 @@ public class GVDashboard extends JFrame {
                 deleteHP(row);
             }
         });
+        HPTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                JTable table = (JTable) e.getSource();
+                Point point = e.getPoint();
+                int row = table.rowAtPoint(point);
+                if (e.getClickCount() == 2 && table.getSelectedRow() != -1) {
+                    new HPSinhVienForm((Integer) table.getValueAt(row, 0));
+                }
+            }
+        });
     }
 
     public void searchGV(ActionEvent e) {
@@ -382,7 +393,10 @@ public class GVDashboard extends JFrame {
         try {
             int ms = Integer.parseInt(searchText);
             sinhvienEntityList = new ArrayList<>();
-            sinhvienEntityList.add(dataCRUD.getWithId(SinhvienEntity.class, ms));
+            SinhvienEntity entity = dataCRUD.getWithId(SinhvienEntity.class, ms);
+            if (entity != null) {
+                sinhvienEntityList.add(entity);
+            }
         } catch (NumberFormatException ex) {
             sinhvienEntityList = SinhvienDAO.findSV(searchText, (classBox.getSelectedItem() == "*"?-1:(int) classBox.getSelectedItem()));
         }

@@ -22,6 +22,7 @@ public class SVHPTableModel extends AbstractTableModel {
 
     public void setList(List<SvdkhpEntity> list) {
         this.list = list;
+        fireTableDataChanged();
     }
 
     @Override
