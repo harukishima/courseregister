@@ -55,6 +55,9 @@ public class GVDashboard extends JFrame {
     private JButton addGVienButton;
     private JButton editGVienButton;
     private JButton deleteGVienButton;
+    private JTable HPTable;
+    private JButton addHPButton;
+    private JButton deleteHPButton;
 
     private GVTableModel gvTableModel;
     private MHTableModel mhTableModel;
@@ -63,6 +66,7 @@ public class GVDashboard extends JFrame {
     private SVTableModel svTableModel;
     private KDKTableModel kdkTableModel;
     private GVienTableModel gVienTableModel;
+    private HPTableModel hpTableModel;
     private JDialog dialog;
 
     public GVDashboard() {
@@ -89,6 +93,7 @@ public class GVDashboard extends JFrame {
         initSVTab();
         initKDKTab();
         initGVienTab();
+        initHPTab();
     }
 
     public void initGVTab() {
@@ -339,6 +344,26 @@ public class GVDashboard extends JFrame {
         });
     }
 
+    public void initHPTab() {
+        addHPButton.addActionListener(e -> new CreateHocPhan(this, HockiDAO.getCurrentHK()));
+        List<HocphanEntity> list = HocphanDAO.getListLoadAllByHocKy(HockiDAO.getCurrentHK());
+        hpTableModel = new HPTableModel(list);
+        HPTable.setModel(hpTableModel);
+        deleteHPButton.addActionListener(e -> {
+            int row = HPTable.getSelectedRow();
+            if (row < 0) {
+                dialog = new ErrorDialog("Chưa chọn học phần nào");
+                dialog.setVisible(true);
+                return;
+            }
+            int dialogResult = JOptionPane.showConfirmDialog(this, "Bạn có thực sự muốn xoá?",
+                    "Xác nhận", JOptionPane.YES_NO_OPTION);
+            if (dialogResult == JOptionPane.YES_OPTION) {
+                deleteHP(row);
+            }
+        });
+    }
+
     public void searchGV(ActionEvent e) {
         updateTableGV(GiaovuDAO.findGV(searchGVField.getText()));
     }
@@ -409,6 +434,11 @@ public class GVDashboard extends JFrame {
         updateTableGVien(list);
     }
 
+    public void updateListTableHP() {
+        List<HocphanEntity> list = HocphanDAO.getListLoadAllByHocKy(HockiDAO.getCurrentHK());
+        updateTableHP(list);
+    }
+
     public void updateTableGV(List<GiaovuEntity> list) {
         gvTableModel.setList(list);
     }
@@ -435,6 +465,10 @@ public class GVDashboard extends JFrame {
 
     public void updateTableGVien(List<GiaovienEntity> list) {
         gVienTableModel.setList(list);
+    }
+
+    public void updateTableHP(List<HocphanEntity> list) {
+        hpTableModel.setList(list);
     }
 
     public void openCreateGVForm() {
@@ -601,6 +635,18 @@ public class GVDashboard extends JFrame {
         dialog = new SuccessDialog("Xoá giáo viên thành công");
         dialog.setVisible(true);
         updateListTableGVien();
+    }
+
+    public void deleteHP(int row) {
+        int id = (int) HPTable.getValueAt(row, 0);
+        if (!dataCRUD.deleteEntityById(HocphanEntity.class, id)) {
+            dialog = new ErrorDialog("Không thể xoá học phần");
+            dialog.setVisible(true);
+            return;
+        }
+        dialog = new SuccessDialog("Xoá học phần thành công");
+        dialog.setVisible(true);
+        updateListTableHP();
     }
 
     public void setCurrentHK() {

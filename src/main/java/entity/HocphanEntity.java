@@ -16,6 +16,7 @@ public class HocphanEntity {
     private Date ngaybatdau;
     private String tenhk;
     private Integer namhoc;
+    private Short slot;
     private MonhocEntity monhocByMamh;
     private GiaovienEntity giaovienByMagvlt;
     private HockiEntity hocki;
@@ -111,6 +112,19 @@ public class HocphanEntity {
     public void setNamhoc(Integer namhoc) {
         this.namhoc = namhoc;
     }
+
+    @Basic
+    @Column(name = "slot")
+    public Short getSlot() {
+        return slot;
+    }
+
+    public void setSlot(Short slot) {
+        this.slot = slot;
+    }
+
+
+
 
     @Override
     public boolean equals(Object o) {

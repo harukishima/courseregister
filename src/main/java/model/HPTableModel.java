@@ -4,12 +4,13 @@ import entity.HocphanEntity;
 import util.HocphanUtils;
 
 import javax.swing.table.AbstractTableModel;
+import java.sql.Date;
 import java.util.List;
 
 public class HPTableModel extends AbstractTableModel {
     protected List<HocphanEntity> list;
     protected String[] columnNames = {"Mã HP", "Mã MH", "Tên MH", "Số tín chỉ", "Giáo viên LT", "Phòng học", "Ngày học", "Ca",
-            "Học kì", "Năm học"};
+            "Học kì", "Năm học", "Slot", "Ngày bắt đầu"};
 
     public HPTableModel(List<HocphanEntity> list) {
         this.list = list;
@@ -36,8 +37,10 @@ public class HPTableModel extends AbstractTableModel {
                 return Integer.class;
             case 2: case 4: case 5: case 6: case 7: case 8:
                 return String.class;
-            case 3:
+            case 3: case 10:
                 return Short.class;
+            case 11:
+                return Date.class;
             default:
                 return null;
         }
@@ -77,6 +80,10 @@ public class HPTableModel extends AbstractTableModel {
                 return entity.getTenhk();
             case 9:
                 return entity.getNamhoc();
+            case 10:
+                return entity.getSlot();
+            case 11:
+                return entity.getNgaybatdau();
             default:
                 return null;
         }
