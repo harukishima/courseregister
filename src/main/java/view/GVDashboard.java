@@ -7,9 +7,12 @@ import org.example.App;
 import util.hashUtils;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -69,6 +72,8 @@ public class GVDashboard extends JFrame {
     private HPTableModel hpTableModel;
     private JDialog dialog;
 
+    private boolean[] initController = new boolean[9];
+
     public GVDashboard() {
         add(panel);
         init();
@@ -86,14 +91,90 @@ public class GVDashboard extends JFrame {
             App.giaoVuLogIn = new GiaoVuLogIn();
             dispose();
         });
+        initialInitController();
         initGVTab();
-        initMHTab();
-        initHKTab();
-        initClassTab();
-        initSVTab();
-        initKDKTab();
-        initGVienTab();
-        initHPTab();
+        initController[0] = true;
+//        initMHTab();
+//        initHKTab();
+//        initClassTab();
+//        initSVTab();
+//        initKDKTab();
+//        initGVienTab();
+//        initHPTab();
+    }
+
+    private void initialInitController() {
+        Arrays.fill(initController, false);
+        ChangeListener changeListener = e -> {
+            JTabbedPane sourceTabbedPane = (JTabbedPane) e.getSource();
+            int index = sourceTabbedPane.getSelectedIndex();
+            if (initController[index]) {
+                switch (index) {
+                    case 0:
+                        updateListTableGV();
+                        break;
+                    case 1:
+                        updateListTableMH();
+                        break;
+                    case 2:
+                        updateListTableHK();
+                        break;
+                    case 3:
+                        updateListTableLop();
+                        break;
+                    case 4:
+                        updateListTableSV();
+                        break;
+                    case 5:
+                        updateListTableKDK();
+                        break;
+                    case 6:
+                        updateListTableGV();
+                        break;
+                    case 7:
+                        updateListTableHP();
+                    default:
+                        break;
+                }
+            }
+            else {
+                switch (index) {
+                    case 0:
+                        initGVTab();
+                        break;
+                    case 1:
+                        initMHTab();
+                        break;
+                    case 2:
+                        initHKTab();
+                        break;
+                    case 3:
+                        initClassTab();
+                        initController[3] = true;
+                        if (!initController[4]) {
+                            initSVTab();
+                            initController[4] = true;
+                        }
+                        break;
+                    case 4:
+                        initSVTab();
+                        break;
+                    case 5:
+                        initKDKTab();
+                        break;
+                    case 6:
+                        initGVienTab();
+                        break;
+                    case 7:
+                        initHPTab();
+                        break;
+                    default:
+                        break;
+                }
+                initController[index] = true;
+            }
+        };
+        tabbedPane1.addChangeListener(changeListener);
     }
 
     public void initGVTab() {

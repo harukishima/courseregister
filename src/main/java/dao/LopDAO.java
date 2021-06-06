@@ -73,9 +73,10 @@ public class LopDAO {
 //                criteria.add(Restrictions.eq("malop", e.getMalop()));
 //                nam = Math.toIntExact((long) criteria.list().get(0));
                 //Cach 3
-                query = session.createQuery("select count(*), gioitinh from SinhvienEntity group by gioitinh");
+                query = session.createQuery("select count(masv), gioitinh from SinhvienEntity where malop = :classid group by gioitinh");
+                query.setParameter("classid", e.getMalop());
                 List<?> c = query.list();
-                for(int i=0; i<list.size(); i++) {
+                for(int i=0; i<c.size(); i++) {
                     Object[] row = (Object[]) c.get(i);
                     //System.out.println(row[0]+", "+ row[1]);
                     if (row[1].equals("NAM")) {
