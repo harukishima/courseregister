@@ -1,11 +1,8 @@
 package util;
 
-import com.sun.xml.fastinfoset.algorithm.HexadecimalEncodingAlgorithm;
-
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Objects;
 import java.util.Random;

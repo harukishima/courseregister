@@ -10,6 +10,7 @@ public class SVDashboard extends JFrame {
     private JPanel panel1;
     private JButton ListHPButton;
     private JButton LogOutButton;
+    private JButton changePasswordButton;
 
     public SVDashboard() {
         add(panel1);
@@ -32,6 +33,10 @@ public class SVDashboard extends JFrame {
             this.setVisible(false);
             new DKHPForm(this);
         });
+        changePasswordButton.addActionListener(e -> {
+            this.setVisible(false);
+            new ChangeSVPassword(this);
+        });
     }
 
     private void logOutAction() {
@@ -40,4 +45,5 @@ public class SVDashboard extends JFrame {
         App.studentLogIn = new StudentLogIn();
         dispose();
     }
+
 }
