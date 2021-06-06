@@ -37,6 +37,10 @@ public class SVDashboard extends JFrame {
             this.setVisible(false);
             new ChangeSVPassword(this);
         });
+        ListHPButton.addActionListener(e -> {
+            this.setVisible(false);
+            new SVDanhSachDKHPForm(this, App.currentSV);
+        });
     }
 
     private void logOutAction() {

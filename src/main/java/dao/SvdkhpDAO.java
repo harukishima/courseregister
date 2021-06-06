@@ -7,9 +7,9 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import util.HibernateUtils;
-import util.NlpUtils;
 
 import java.util.List;
+import java.util.Locale;
 
 public class SvdkhpDAO {
     public static List<SvdkhpEntity> getListSVOfHP(int idHP) {
@@ -42,7 +42,7 @@ public class SvdkhpDAO {
             for (SvdkhpEntity entity : list) {
                 Hibernate.initialize(entity.getHocphanByIdhocphan().getGiaovienByMagvlt());
                 Hibernate.initialize(entity.getHocphanByIdhocphan().getMonhocByMamh());
-                Hibernate.initialize(entity.getSinhvienByMasv());
+                //Hibernate.initialize(entity.getSinhvienByMasv());
             }
         } catch (HibernateException e) {
             e.printStackTrace();
@@ -76,12 +76,12 @@ public class SvdkhpDAO {
 
     public static List<SvdkhpEntity> findSV(int idHP, String search) {
         List<SvdkhpEntity> list = null;
-        search = NlpUtils.removeAccent(search).toLowerCase();
+        //search = NlpUtils.removeAccent(search).toLowerCase();
         Session session = HibernateUtils.getSessionFactory().openSession();
         try {
-            Query query = session.createQuery("select SvdkhpEntity from SvdkhpEntity dk join SinhvienEntity sv on dk.masv = sv.masv where dk.idhocphan = :idhp and sv.fullname like :searchString");
+            Query query = session.createQuery("select dk from SvdkhpEntity dk join SinhvienEntity sv on dk.masv = sv.masv where dk.idhocphan = :idhp and lower(sv.fullname) like :searchString");
             query.setParameter("idhp", idHP);
-            query.setParameter("searchString", "%"+search+"%");
+            query.setParameter("searchString", "%"+search.toLowerCase(Locale.ROOT)+"%");
             list = query.list();
         } catch (HibernateException e) {
             e.printStackTrace();

@@ -1,7 +1,6 @@
 package dao;
 
 
-import entity.GiaovuEntity;
 import entity.SinhvienEntity;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -23,7 +22,7 @@ public class SinhvienDAO {
                 query = session.createQuery("from SinhvienEntity where lower(fullname) like :searchString and malop = :lop order by masv asc");
                 query.setParameter("lop", malop);
             }
-            query.setParameter("searchString", "%"+search.toLowerCase()+"%");
+            query.setParameter("searchString", "%" + search.toLowerCase() + "%");
             list = query.list();
         } catch (HibernateException ex) {
             System.err.println(ex);

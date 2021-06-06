@@ -1,9 +1,6 @@
 package view;
 
-import dao.SinhvienDAO;
 import dao.SvdkhpDAO;
-import dao.dataCRUD;
-import entity.SinhvienEntity;
 import entity.SvdkhpEntity;
 import model.SVHPTableModel;
 
@@ -54,7 +51,7 @@ public class HPSinhVienForm extends JFrame {
 
     private void searchSV() {
         List<SvdkhpEntity> list;
-        String searchText = searchField.getText();
+        String searchText = searchField.getText().toLowerCase();
         if (searchText.isEmpty()) {
             updateTableList();
             return;
