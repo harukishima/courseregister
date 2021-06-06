@@ -21,4 +21,5 @@ public class HocphanUtils {
     public static int getIndexOfCaHoc(String ca) {
         return ArrayUtils.indexOf(caHoc, ca);
     }
+
 }

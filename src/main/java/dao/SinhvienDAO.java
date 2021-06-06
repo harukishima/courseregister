@@ -7,6 +7,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import util.HibernateUtils;
+import util.hashUtils;
 
 import java.util.List;
 
@@ -30,6 +31,18 @@ public class SinhvienDAO {
             session.close();
         }
         return list;
+    }
+
+    public static SinhvienEntity LogIn(String username, String password) {
+        try {
+            SinhvienEntity sinhvienEntity = dataCRUD.getWithId(SinhvienEntity.class, Integer.parseInt(username));
+            if (sinhvienEntity != null && hashUtils.checkPassword(password, sinhvienEntity.getPass())) {
+                return sinhvienEntity;
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

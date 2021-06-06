@@ -45,4 +45,19 @@ public class HocphanDAO {
         }
         return entity;
     }
+
+    public static int countDK(int idhocphan) {
+        int count = 0;
+        Session session = HibernateUtils.getSessionFactory().openSession();
+        try {
+            Query query = session.createQuery("select count(masv) from SvdkhpEntity where idhocphan = :id");
+            query.setParameter("id", idhocphan);
+            count = Math.toIntExact((long) query.getSingleResult());
+        } catch (HibernateException e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return count;
+    }
 }

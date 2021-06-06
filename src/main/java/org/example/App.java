@@ -7,6 +7,7 @@ import entity.SinhvienEntity;
 import util.HibernateUtils;
 import view.GVDashboard;
 import view.GiaoVuLogIn;
+import view.SVDashboard;
 import view.StudentLogIn;
 
 /**
@@ -20,6 +21,7 @@ public class App
     public static GiaovuEntity currentGV = null;
     public static SinhvienEntity currentSV = null;
     public static GVDashboard gvDashboard = null;
+    public static SVDashboard svDashboard = null;
     public static void main( String[] args )
     {
         HibernateUtils.getSessionFactory().openSession();

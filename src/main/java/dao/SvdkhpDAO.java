@@ -1,5 +1,6 @@
 package dao;
 
+import entity.HockiEntity;
 import entity.SvdkhpEntity;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
@@ -78,7 +79,7 @@ public class SvdkhpDAO {
         search = NlpUtils.removeAccent(search).toLowerCase();
         Session session = HibernateUtils.getSessionFactory().openSession();
         try {
-            Query query = session.createQuery("select SvdkhpEntity from SvdkhpEntity dk join SinhvienEntity sv where dk.idhocphan = :idhp and sv.fullname like :searchString");
+            Query query = session.createQuery("select SvdkhpEntity from SvdkhpEntity dk join SinhvienEntity sv on dk.masv = sv.masv where dk.idhocphan = :idhp and sv.fullname like :searchString");
             query.setParameter("idhp", idHP);
             query.setParameter("searchString", "%"+search+"%");
             list = query.list();
@@ -89,4 +90,25 @@ public class SvdkhpDAO {
         }
         return list;
     }
+
+    public static List<SvdkhpEntity> findDKBySVandHK(int idSV, HockiEntity hk) {
+        List<SvdkhpEntity> list = null;
+        Session session = HibernateUtils.getSessionFactory().openSession();
+        try {
+            Query query = session.createQuery("select dk from SvdkhpEntity dk inner join HocphanEntity hp on dk.idhocphan = hp.idhocphan where dk.masv = :sv and hp.tenhk = :hk and hp.namhoc = :nam");
+            query.setParameter("sv", idSV);
+            query.setParameter("hk", hk.getTenhk());
+            query.setParameter("nam", hk.getNamhoc());
+            list = query.list();
+            for (SvdkhpEntity entity : list) {
+                Hibernate.initialize(entity.getHocphanByIdhocphan());
+            }
+        } catch (HibernateException e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return list;
+    }
+
 }

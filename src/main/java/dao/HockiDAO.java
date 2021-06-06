@@ -1,11 +1,16 @@
 package dao;
 
 import entity.HockiEntity;
+import entity.KidangkihocphanEntity;
+import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import util.HibernateUtils;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 
 public class HockiDAO {
@@ -38,6 +43,7 @@ public class HockiDAO {
         try {
             Query query = session.createQuery("from HockiEntity where hkhientai = true");
             hockiEntity = (HockiEntity) query.getSingleResult();
+            Hibernate.initialize(hockiEntity.getKidangkihocphans());
         } catch (HibernateException e) {
             e.printStackTrace();
         } finally {
@@ -54,12 +60,26 @@ public class HockiDAO {
             query.setParameter("ten", tenhk);
             query.setParameter("nam", namhoc);
             hockiEntity = (HockiEntity) query.getSingleResult();
+            //Hibernate.initialize(hockiEntity.getKidangkihocphans());
         } catch (HibernateException e) {
             e.printStackTrace();
         } finally {
             session.close();
         }
         return hockiEntity;
+    }
+
+    public static boolean checkTrongKiDK() {
+        List<KidangkihocphanEntity> kidangkihocphanEntityList = (List<KidangkihocphanEntity>) getCurrentHK().getKidangkihocphans();
+        LocalDateTime cur = LocalDateTime.now();
+        for(KidangkihocphanEntity entity : kidangkihocphanEntityList) {
+            LocalDateTime start = entity.getNgaybatdau().toLocalDateTime();
+            LocalDateTime end = entity.getNgayketthuc().toLocalDateTime();
+            if (start.isBefore(cur) && end.isAfter(cur)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }
