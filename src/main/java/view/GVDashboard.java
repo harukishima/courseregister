@@ -129,7 +129,7 @@ public class GVDashboard extends JFrame {
                         updateListTableKDK();
                         break;
                     case 6:
-                        updateListTableGV();
+                        updateListTableGVien();
                         break;
                     case 7:
                         updateListTableHP();
@@ -261,7 +261,7 @@ public class GVDashboard extends JFrame {
     }
 
     public void initHKTab() {
-        List<HockiEntity> listHK = dataCRUD.getListOrder(HockiEntity.class, "order by tenhk asc, namhoc asc");
+        List<HockiEntity> listHK = dataCRUD.getListOrder(HockiEntity.class, "order by namhoc asc, tenhk asc");
         hkTableModel = new HKTableModel(listHK);
         HKTable.setModel(hkTableModel);
         addHKButton.addActionListener(e -> new CreateHocKi(this));
@@ -497,7 +497,7 @@ public class GVDashboard extends JFrame {
     }
 
     public void updateListTableHK() {
-        List<HockiEntity> list = dataCRUD.getListOrder(HockiEntity.class, "order by tenhk asc, namhoc asc");
+        List<HockiEntity> list = dataCRUD.getListOrder(HockiEntity.class, "order by namhoc asc, tenhk asc");
         updateTableHK(list);
     }
 

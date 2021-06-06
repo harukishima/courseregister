@@ -11,6 +11,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.ZoneOffset;
 import java.util.Calendar;
+import java.util.Objects;
 
 public class CreateHocKi extends JFrame {
     private JComboBox tenHKBox;
@@ -51,7 +52,7 @@ public class CreateHocKi extends JFrame {
             return;
         }
         HockiEntity hockiEntity = new HockiEntity();
-        hockiEntity.setTenhk((String) tenHKBox.getSelectedItem());
+        hockiEntity.setTenhk(((String) Objects.requireNonNull(tenHKBox.getSelectedItem())).trim());
         hockiEntity.setNamhoc(namHoc);
         hockiEntity.setHkhientai(false);
         try {

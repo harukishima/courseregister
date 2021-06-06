@@ -9,7 +9,9 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import util.HibernateUtils;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -80,6 +82,20 @@ public class HockiDAO {
             }
         }
         return false;
+    }
+
+    public static List<Integer> findAvailableYear() {
+        List<Integer> list = new ArrayList<>();
+        Session session = HibernateUtils.getSessionFactory().openSession();
+        try {
+            Query query = session.createQuery("select distinct namhoc from HockiEntity order by namhoc");
+            list = query.list();
+        } catch (HibernateException e) {
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return list;
     }
 
 }

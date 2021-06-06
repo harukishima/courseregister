@@ -101,7 +101,8 @@ public class SvdkhpDAO {
             query.setParameter("nam", hk.getNamhoc());
             list = query.list();
             for (SvdkhpEntity entity : list) {
-                Hibernate.initialize(entity.getHocphanByIdhocphan());
+                Hibernate.initialize(entity.getHocphanByIdhocphan().getGiaovienByMagvlt());
+                Hibernate.initialize(entity.getHocphanByIdhocphan().getMonhocByMamh());
             }
         } catch (HibernateException e) {
             e.printStackTrace();

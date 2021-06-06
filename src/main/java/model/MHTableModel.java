@@ -93,8 +93,8 @@ public class MHTableModel extends AbstractTableModel {
                     delete.add(monhocEntity.getMamh());
                 }
             }
-
         }
+        fireTableCellUpdated(rowIndex, 0);
     }
 
     public List<MonhocEntity> getList() {
