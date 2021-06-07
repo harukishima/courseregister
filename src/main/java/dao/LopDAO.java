@@ -129,6 +129,7 @@ public class LopDAO {
         Session session = HibernateUtils.getSessionFactory().openSession();
         try {
             Query query = session.createQuery("from SinhvienEntity where malop = :ml");
+            query.setParameter("ml", id);
             list = query.list();
         } catch (HibernateException e) {
             e.printStackTrace();

@@ -11,6 +11,7 @@ public class SVDashboard extends JFrame {
     private JButton ListHPButton;
     private JButton LogOutButton;
     private JButton changePasswordButton;
+    private JButton accountInfoButton;
 
     public SVDashboard() {
         add(panel1);
@@ -40,6 +41,10 @@ public class SVDashboard extends JFrame {
         ListHPButton.addActionListener(e -> {
             this.setVisible(false);
             new SVDanhSachDKHPForm(this, App.currentSV);
+        });
+        accountInfoButton.addActionListener(e -> {
+            this.setVisible(false);
+            new AccountInfoFrame(App.currentSV, this);
         });
     }
 
